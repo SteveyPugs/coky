@@ -1,0 +1,23 @@
+{
+  "name": "cooky",
+  "version": "0.0.0",
+  "description": "Cookie Cookie",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SteveyPugs/cooky.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SteveyPugs/cooky/issues"
+  },
+  "homepage": "https://github.com/SteveyPugs/cooky",
+  "dependencies": {
+    "express": "^4.13.3",
+    "express-handlebars": "^2.0.1"
+  }
+}
