@@ -1,2 +1,2 @@
-# coky
+# cooky
 Cookie Cookie
