@@ -34,7 +34,7 @@ app.controller("Payment", function($scope, $localStorage, $sessionStorage, $http
 			UserEmail = $scope.account.UserEmail;
 		}
 		var handler = StripeCheckout.configure({
-			key: "pk_test_tZwEfQhdCreblBrYOvQz0iSj",
+			key: "KEY",
 			locale: "auto",
 			email: UserEmail,
 			allowRememberMe: false,
