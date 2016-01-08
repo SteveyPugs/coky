@@ -1,0 +1,21 @@
+<div class="container">
+	{{>nav}}
+	<br>
+	<h3>Saved Addresses</h3>
+	<hr>
+	<div class="row">
+		{{#each addresslist}}
+		<div class="col-lg-3">
+			<div class="alert alert-success" role="alert">
+				<address>
+					{{UserAddressFullName}}<br>
+					{{UserAddressStreet}}<br>
+					{{UserAddressCity}}, {{UserAddressState}} {{UserAddressZip}}<br>
+				</address>
+				{{#if UserAddressDefault}}<i class="fa fa-check-circle"></i> Default{{/if}}
+				<br>
+			</div>
+		</div>
+		{{/each}}
+	</div>
+</div>

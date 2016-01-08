@@ -1,0 +1,36 @@
+<div class="container" ng-controller="Store">
+	{{>nav}}
+	<div class="row">
+		<div class="col-lg-10">
+			<div class="input-group">
+				<input class="form-control input-sm" type="text" placeholder="Search for Yummy..." ng-model="inventorySearch">
+				<span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
+			</div>
+		</div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-lg-3">
+			<label>Category</label>
+			<select class="form-control input-sm" ng-model="categorySearch.CategoryName">
+				<option selected></option>
+				<option ng-repeat="category in categories" value="\{{category.CategoryName}}">\{{category.CategoryName}}</option>
+			</select>
+		</div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-md-2" ng-repeat="product in products | filter: { ProductName: inventorySearch, CategoryName: categorySearch.CategoryName }">
+			<div class="thumbnail">
+				<img src="/img/cc.jpg">
+				<div class="caption">
+					<h5><b ng-bind="product.ProductName"></b></h5>
+					<h5><small ng-bind="product.CategoryName"></small></h5>
+					<p><small ng-bind="'$' + product.ProductPrice"></small></p>
+					<p><a href="#" class="btn btn-default btn-sm" role="button" ng-click="addToCart(product)">Add to Cart</a></p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="/js/controllers/store.controller.js"></script>

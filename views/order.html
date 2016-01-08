@@ -1,0 +1,55 @@
+<div class="container" ng-controller="Orders">
+	{{>nav}}
+	<br>
+	<div class="row">
+		<div class="col-lg-12">
+			<h3>Orders</h3>
+			<br>
+			<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+				{{#each orders}}
+				<div class="panel panel-default">
+					<div class="panel-heading" role="tab">
+						<h4 class="panel-title">{{capitalize OrderGUID}}<span class="pull-right">{{formatDate createdAt "dddd, MMMM Do YYYY"}}</span></h4>
+					</div>
+					<div id="Order-{{OrderID}}" class="panel-collapse collapse in" role="tabpanel">
+						<div class="panel-body">
+							<table class="table table-striped table-bordered table-condensed">
+								<tr>
+									<th>Item</th>
+									<th class="text-right">Total Price</th>
+								</tr>
+								{{#each OrderPieces}}
+								<tr>
+									<td width="80%"><b>\{{getProduct({{this.ProductID}}).ProductName}}</b><small> x {{this.OrderPieceQuantity}}</small></td>
+									<td width="20%" class="text-right" ng-bind="getProduct({{this.ProductID}}).ProductPrice * {{this.OrderPieceQuantity}} | currency:'$'"></td>
+								</tr>
+								{{/each}}
+								<tr>
+									<td colspan="5" class="text-right">Shipping | {{decimal OrderShipping "$"}}</td>
+								</tr>
+								<tr>
+									<td colspan="5" class="text-right">Taxes | {{decimal OrderTax "$"}}</td>
+								</tr>
+								<tr>
+									<td colspan="5" class="text-right"><b>Total | {{decimal OrderTotal "$"}}</b></td>
+								</tr>
+							</table>
+							<h4>Shipping To</h4>
+							<address>
+							{{OrderAddress.UserAddressFullName}}<br>
+							{{OrderAddress.UserAddressStreet}}<br>
+							{{OrderAddress.UserAddressCity}}, {{OrderAddress.UserAddressState}} {{OrderAddress.UserAddressZip}}<br>
+							</address>
+							<h4>Status</h4>
+							{{#if OrderPaid}}Order Paid <i class="fa fa-check-circle"></i>{{else}}Order Not Paid <i class="fa fa-times-circle"></i>{{/if}}
+							{{#if OrderShipCode}} | Shipped <i class="fa fa-check-circle"></i> {{OrderShipCode}}{{else}} | Not Shipped <i class="fa fa-times-circle"></i>{{/if}}
+						</div>
+					</div>
+				</div>
+				<br>
+				{{/each}}
+			</div>
+		</div>
+	</div>
+</div>
+<script src="/js/controllers/order.controller.js"></script>

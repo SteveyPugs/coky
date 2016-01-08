@@ -1,0 +1,95 @@
+<div class="container" ng-controller="Portal">
+	{{>nav-portal}}
+	<div class="row">
+		<div class="col-md-12">
+			<div class="tab-content">
+				<div class="tab-pane active" id="products">
+					<h4><b>List of Products</b></h4>
+					<button type="button" class="btn btn-xs btn-success" data-toggle="modal" data-target="#AddProductModal">Add</button>
+					<br><br>
+					<table st-set-filter="customFilter" st-table="products" st-safe-src="safeproducts" class="table table-striped table-bordered">
+						<thead>
+							<tr>
+								<th class="text-center" width="17%" st-sort="ProductName" st-skip-natural="true">Product</th>
+								<th class="text-center" width="15%"></th>
+								<th class="text-center" width="17%" st-sort="ProductPrice" st-skip-natural="true">Price</th>
+								<th class="text-center" width="17%" st-sort="CategoryName" st-skip-natural="true">Category</th>
+								<th class="text-center" width="17%" st-sort="ProductActive" st-skip-natural="true">Status</th>
+								<th class="text-center" width="17%">Actions</th>
+							</tr>
+							<tr>
+								<th><input st-search="ProductName" placeholder="Product" class="input-sm form-control text-center" type="search" /></th>
+								<th></th>
+								<th><input st-search="ProductPrice" placeholder="0.00" class="input-sm form-control text-center" type="number" min="0" max="99" step="0.01"/></th>
+								<th><st-select-distinct collection="safeproducts" predicate="CategoryName"></st-select-distinct></th>
+								<th><st-select-distinct collection="safeproducts" predicate="ProductStatus"></st-select-distinct></th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="product in products">
+								<td class="text-center" ng-bind="product.ProductName"></td>
+								<td class="text-center"><img width="50%" ng-src="https://s3.amazonaws.com/tweedles/\{{product.ProductImage}}"></td>
+								<td class="text-center" ng-bind="product.ProductPrice"></td>
+								<td class="text-center" ng-bind="product.CategoryName"></td>
+								<td class="text-center" ng-bind="product.ProductActive ? 'Live' : 'Draft'"></td>
+								<td class="text-center">
+									<button type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil fa-2x"></i></button>
+									<button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash fa-2x"></i></button>
+								</td>
+							</tr>
+						</tbody>
+						<tfoot>
+							<tr>
+								<td colspan="6" class="text-center">
+									<div st-pagination="" st-items-by-page="5" st-displayed-pages="20"></div>
+								</td>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+				<div class="tab-pane" id="orders">
+					Orders
+				</div>
+				<div class="tab-pane" id="users">
+					Users
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="AddProductModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header"><h5 class="modal-title">Add Product</h5></div>
+				<div class="modal-body">
+					<form ng-submit="createProduct()">
+						<div class="form-group"><label>Name of Product</label><input type="text" class="form-control" required title="A product name is needed" ng-model="ProductName"></div>
+						<div class="form-group"><label>Price</label><input type="number" class="form-control" min="0" max="99" step="0.01" required title="A product price is needed" ng-model="ProductPrice"></div>
+						<div class="form-group">
+							<label>Image</label><br>
+							<file-field ng-model="image" class="btn btn-default">Add File</file-field>&nbsp;&nbsp;\{{image.name}}
+						</div>
+						<div class="form-group">
+							<label>Category</label>
+							<select class="form-control" required title="A category is needed" ng-model="select.category">
+								<option></option>
+								<option ng-repeat="category in categories" value="\{{category.CategoryID}}">\{{category.CategoryName}}</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label>Status</label>
+							<select class="form-control" required title="A status is needed" ng-model="select.active">
+								<option></option>
+								<option value="0">Live</option>
+								<option value="1">Draft</option>
+							</select>
+						</div>
+						<button type="submit" class="btn btn-default btn-sm">Save</button>
+						<button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="/js/controllers/portal.controller.js"></script>

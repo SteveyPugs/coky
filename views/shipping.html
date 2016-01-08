@@ -1,0 +1,54 @@
+<div class="container" ng-controller="Shipping">
+	{{>nav}}
+	<br>
+	<h3>Address</h3>
+	<hr>
+	<form method="post" action="/store/cart/payment">
+		<div class="row" ng-if="account">
+			<div class="col-lg-12">
+				<div class="checkbox">
+					<label><input type="checkbox" name="UserAddressSave" value="Save"> Save this Address</label>
+				</div>
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="col-lg-6">
+				<label>Full Name</label>
+				<input type="text" required class="form-control" name="UserAddressFullName" placeholder="John Smith">
+			</div>
+			<div class="col-lg-6">
+				<label>Street Address</label>
+				<input type="text" required class="form-control" name="UserAddressStreet" placeholder="123 Apple Street">
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="col-lg-6">
+				<label>City</label>
+				<input type="text" required class="form-control" name="UserAddressCity" placeholder="San Francisco">
+			</div>
+			<div class="col-lg-6">
+				<label>State</label>
+				<input type="text" required class="form-control" name="UserAddressState" placeholder="California">
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="col-lg-6">
+				<label>Zip</label>
+				<input type="text" required class="form-control" name="UserAddressZip" placeholder="90210">
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="col-lg-6">
+				<a href="/store/cart" class="btn btn-default btn-block">Go Back to Cart</a>
+			</div>
+			<div class="col-lg-6">
+				<button type="submit" class="btn btn-default btn-block">Payment</button>
+			</div>
+		</div>
+	</form>
+</div>
+<script src="/js/controllers/shipping.controller.js"></script>
