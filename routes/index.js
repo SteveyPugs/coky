@@ -15,6 +15,7 @@ var nodemailer = require("nodemailer");
 var transporter = nodemailer.createTransport();
 var mail_config = require("../config").mail;
 var amazon_config = require("../config").amazon;
+var stripe_config = require("../config").stripe;
 AWS.config["accessKeyId"] = amazon_config.accessKeyId;
 AWS.config["secretAccessKey"] = amazon_config.secretAccessKey;
 var s3 = new AWS.S3();
@@ -22,7 +23,7 @@ var models = require("../models");
 var router = express.Router();
 var server_config = require("../config").server;
 router.use(cookieParser("baKeShoP"));
-var stripe = require("stripe")("sk_test_NHO6ZwQRQtfDY1VtrW4pUFaB");
+var stripe = require("stripe")(stripe_config.sk);
 
 /* Site Routes */
 router.get("/", function(req, res){

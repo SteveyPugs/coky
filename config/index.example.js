@@ -16,6 +16,9 @@ var config = {
 	},
 	mail:{
 		from: "test@test.com"
+	},
+	stripe:{
+		sk: "KEY"
 	}
 };
 
