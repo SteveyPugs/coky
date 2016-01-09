@@ -20,9 +20,9 @@
 	</div>
 	<br>
 	<div class="row">
-		<div class="col-md-2" ng-repeat="product in products | filter: { ProductName: inventorySearch, CategoryName: categorySearch.CategoryName }">
+		<div class="col-md-3" ng-repeat="product in products | filter: { ProductName: inventorySearch, CategoryName: categorySearch.CategoryName }">
 			<div class="thumbnail">
-				<img src="/img/cc.jpg">
+				<img class="img-responsive" class="img-responsive img-rounded" style="width:250px;height:250px" ng-src="https://s3.amazonaws.com/tweedles/\{{product.ProductImage}}"></td>
 				<div class="caption">
 					<h5><b ng-bind="product.ProductName"></b></h5>
 					<h5><small ng-bind="product.CategoryName"></small></h5>
