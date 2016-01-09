@@ -28,3 +28,5 @@ node_modules
 config/index.js
 
 bower_components
+
+static/js/config.js

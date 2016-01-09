@@ -1,4 +1,4 @@
-app.controller("Payment", function($scope, $localStorage, $sessionStorage, $http, $cookies){
+app.controller("Payment", function($scope, $localStorage, $sessionStorage, $http, $cookies, Stripe){
 	$http.get("/api/product").success(function(data){
 		for(var item in data){
 			for(var key in data[item]){
@@ -34,7 +34,7 @@ app.controller("Payment", function($scope, $localStorage, $sessionStorage, $http
 			UserEmail = $scope.account.UserEmail;
 		}
 		var handler = StripeCheckout.configure({
-			key: "KEY",
+			key: Stripe.key,
 			locale: "auto",
 			email: UserEmail,
 			allowRememberMe: false,
