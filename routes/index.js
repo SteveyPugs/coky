@@ -255,6 +255,7 @@ router.post("/register", function(req, res){
 		}
 	}).spread(function(user, created){
 		if(created){
+			console.log(user, created)
 			transporter.sendMail({
 				from: mail_config.from,
 				to: req.body.UserEmail,
@@ -312,14 +313,19 @@ router.post("/login", function(req, res){
 	 		UserConfirmed: true
  		}
  	}).then(function(user){
- 		if(bcrypt.compareSync(req.body.UserPassword, user.UserPassword)){
- 			res.cookie("User", {
- 				UserID: user.UserID,
- 				UserEmail: user.UserEmail,
- 			}, {
- 				expires: new Date(Date.now() + 14400000)
- 			});
- 			res.send(true);
+ 		if(user){
+	 		if(bcrypt.compareSync(req.body.UserPassword, user.UserPassword)){
+	 			res.cookie("User", {
+	 				UserID: user.UserID,
+	 				UserEmail: user.UserEmail,
+	 			}, {
+	 				expires: new Date(Date.now() + 14400000)
+	 			});
+	 			res.send(true);
+	 		}
+	 		else{
+	 			res.send(false);
+	 		}
  		}
  		else{
  			res.send(false);
