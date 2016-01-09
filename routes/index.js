@@ -255,7 +255,6 @@ router.post("/register", function(req, res){
 		}
 	}).spread(function(user, created){
 		if(created){
-			console.log(user, created)
 			transporter.sendMail({
 				from: mail_config.from,
 				to: req.body.UserEmail,
