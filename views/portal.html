@@ -48,6 +48,35 @@
 						</tfoot>
 					</table>
 				</div>
+				<div class="tab-pane" id="categorys">
+					<h4><b>List of Categorys</b></h4>
+					<button type="button" class="btn btn-xs btn-success" data-toggle="modal" data-target="#AddCatModal">Add</button>
+					<br><br>
+					<table st-set-filter="customFilter" st-table="categories" st-safe-src="safecategories" class="table table-striped table-bordered">
+						<thead>
+							<tr>
+								<th class="text-center" width="17%" st-sort="CategoryName" st-skip-natural="true">Name</th>
+								<th class="text-center" width="17%">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="category in categories">
+								<td class="text-center" ng-bind="category.CategoryName"></td>
+								<td class="text-center">
+									<button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash fa-2x"></i></button>
+								</td>
+							</tr>
+						</tbody>
+						<tfoot>
+							<tr>
+								<td colspan="6" class="text-center">
+									<div st-pagination="" st-items-by-page="5" st-displayed-pages="20"></div>
+								</td>
+							</tr>
+						</tfoot>
+					</table>
+
+				</div>
 				<div class="tab-pane" id="orders">
 					Orders
 				</div>
@@ -84,6 +113,20 @@
 								<option value="1">Draft</option>
 							</select>
 						</div>
+						<button type="submit" class="btn btn-default btn-sm">Save</button>
+						<button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="AddCatModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header"><h5 class="modal-title">Add Category</h5></div>
+				<div class="modal-body">
+					<form ng-submit="createCategory()">
+						<div class="form-group"><label>Category</label><input type="text" class="form-control" required title="A category name is needed" ng-model="Category"></div>
 						<button type="submit" class="btn btn-default btn-sm">Save</button>
 						<button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
 					</form>

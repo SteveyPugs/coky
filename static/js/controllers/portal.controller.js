@@ -20,6 +20,7 @@ app.controller("Portal", function($scope, $http, $filter){
 		$scope.safeproducts = data;
 		$http.get("/api/category").success(function(data){
 			$scope.categories = data;
+			$scope.safecategories = data;
 		}).error(function(err){
 			console.log(err);
 		});
@@ -44,6 +45,16 @@ app.controller("Portal", function($scope, $http, $filter){
 			$scope.ProductPrice = "";
 			$scope.select = "";
 			$("#AddProductModal").modal("hide");
+		}).error(function(err){
+			//do something on error
+		});
+	};
+	$scope.createCategory = function(){
+		$http.post("/api/category", {
+			CategoryName: $scope.Category
+		}).success(function(data){
+			$scope.Category = "";
+			$("#AddCatModal").modal("hide");
 		}).error(function(err){
 			//do something on error
 		});

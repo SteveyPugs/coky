@@ -398,6 +398,16 @@ router.post("/api/product", upload.single("ProductImage"), function(req, res){
 		}
 	});
 });
+
+router.post("/api/category", function(req, res){
+	models.Category.create({
+		CategoryName: req.body.CategoryName
+	}).then(function(results){
+		res.send(results);
+	}).catch(function(err){
+		res.send(err);
+	});
+});
 /* API Routes */
 
 /* Administration Routes */
