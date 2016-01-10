@@ -1,4 +1,18 @@
 app.controller("Store", function($scope, $localStorage, $sessionStorage, $rootScope){
+	$scope.priceFilter = function (item) {
+		if($scope.MinPrice && !$scope.MaxPrice){
+			return (item.ProductPrice >= $scope.MinPrice);
+		}
+		else if(!$scope.MinPrice && $scope.MaxPrice){
+			return (item.ProductPrice <= $scope.MaxPrice);
+		}
+		else if($scope.MinPrice && $scope.MaxPrice){
+			return (item.ProductPrice >= $scope.MinPrice && item.ProductPrice <= $scope.MaxPrice);
+		}
+		else{
+			return (item);
+		}
+	}
 	$scope.addToCart = function(product){
 		if($localStorage.cartCount){
 			$localStorage.cartCount = $localStorage.cartCount + 1;
