@@ -8,9 +8,9 @@
 			</div>
 		</div>
 		<div class="col-lg-4">
-			<select class="form-control" ng-model="categorySearch.CategoryName">
+			<select class="form-control" ng-model="categorySearch.CategoryID">
 				<option value="">Select a Category</option>
-				<option ng-repeat="category in categories" value="\{{category.CategoryName}}">\{{category.CategoryName}}</option>
+				<option ng-repeat="category in categories" value="\{{category.CategoryID}}">\{{category.CategoryName}}</option>
 			</select>
 		</div>
 		<div class="col-lg-4">
@@ -22,7 +22,7 @@
 	</div>
 	<br>
 	<div class="row">
-		<div class="col-md-3" ng-repeat="product in filtered = (products | filter: { ProductName: inventorySearch, CategoryName: categorySearch.CategoryName } | filter: priceFilter)">
+		<div class="col-md-3" ng-repeat="product in filtered = (products | filter: { ProductName: inventorySearch, CategoryID: categorySearch.CategoryID } | filter: priceFilter)">
 			<div class="thumbnail">
 				<img class="img-responsive" class="img-responsive img-rounded" style="width:250px;height:250px" ng-src="https://s3.amazonaws.com/tweedles/\{{product.ProductImage}}"></td>
 				<div class="caption">

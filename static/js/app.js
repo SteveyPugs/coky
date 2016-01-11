@@ -4,6 +4,7 @@ var app = angular.module("Bakery", ["ngStorage","bootstrap.fileField", "smart-ta
 			for(var key in data[item]){
 				if(key === "Category"){
 					data[item]["CategoryName"] = data[item][key].CategoryName;
+					data[item]["CategoryID"] = data[item][key].CategoryID;
 					delete data[item]["Category"];
 				}
 			}	
