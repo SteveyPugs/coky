@@ -93,18 +93,7 @@ router.get("/orders", function(req, res){
 
 router.get("/profile", function(req, res){
 	if(req.cookies.User){
-		models.UserAddress.findAll({
-			where: {
-				UserID: req.cookies.User.UserID
-			},
-			order: "UserAddressDefault DESC"
-		}).then(function(addresses){
-			res.render("profile",{
-				addresslist: lodash.pluck(addresses, "dataValues")
-			});
-		}).catch(function(err){
-			res.send(err);
-		});	
+		res.render("profile");
 	}
 	else{
 		res.redirect("/store");
@@ -373,6 +362,18 @@ router.get("/api/product", function(req, res){
 	});
 });
 
+router.get("/api/address/:UserID", function(req, res){
+	models.UserAddress.findAll({
+		where: {
+			UserID: req.params.UserID
+		}
+	}).then(function(addresses){
+		res.send(lodash.pluck(addresses, "dataValues"));
+	}).catch(function(err){
+		res.send(err);
+	});
+});
+
 router.post("/api/product", upload.single("ProductImage"), function(req, res){
 	var fileGUID = chance.guid();
 	s3.putObject({
@@ -404,6 +405,32 @@ router.post("/api/category", function(req, res){
 		CategoryName: req.body.CategoryName
 	}).then(function(results){
 		res.send(results);
+	}).catch(function(err){
+		res.send(err);
+	});
+});
+
+router.post("/api/address", function(req, res){
+	models.UserAddress.update({
+		UserAddressDefault: false
+	},{
+		where:{
+			UserID: req.body.UserID,
+			deletedAt: null
+		}
+	}).then(function(updated){
+		models.UserAddress.update({
+			UserAddressDefault: true
+		},{
+			where:{
+				UserID: req.body.UserID,
+				UserAddressID: req.body.UserAddressID,
+			}
+		}).then(function(updated){
+			res.send("success");
+		}).catch(function(err){
+			res.send(err);
+		});
 	}).catch(function(err){
 		res.send(err);
 	});

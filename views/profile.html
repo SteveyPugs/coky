@@ -1,21 +1,22 @@
-<div class="container">
+<div class="container" ng-controller="Profile">
 	{{>nav}}
 	<br>
 	<h3>Saved Addresses</h3>
 	<hr>
 	<div class="row">
-		{{#each addresslist}}
-		<div class="col-lg-3">
+		<div class="col-lg-3" ng-repeat="address in addresses | orderBy: '-UserAddressDefault'">
 			<div class="alert alert-success" role="alert">
 				<address>
-					{{UserAddressFullName}}<br>
-					{{UserAddressStreet}}<br>
-					{{UserAddressCity}}, {{UserAddressState}} {{UserAddressZip}}<br>
+					\{{address.UserAddressFullName}}<br>
+					\{{address.UserAddressStreet}}<br>
+					\{{address.UserAddressCity}}, \{{address.UserAddressState}} \{{address.UserAddressZip}}<br>
 				</address>
-				{{#if UserAddressDefault}}<i class="fa fa-check-circle"></i> Default{{/if}}
-				<br>
+				<ANY ng-switch="address.UserAddressDefault">
+					<ANY ng-switch-when="true"><buttton type="button" class="btn btn-primary" disabled="disabled"><i class="fa fa-check-circle"></i> Default</button></ANY>
+					<ANY ng-switch-when="false"><buttton type="button" class="btn btn-primary" ng-click="setDefault(address.UserAddressID)">Set Default</button></ANY>
+				</ANY>
 			</div>
 		</div>
-		{{/each}}
 	</div>
 </div>
+<script src="/js/controllers/profile.controller.js"></script>
