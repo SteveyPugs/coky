@@ -23,7 +23,7 @@
 				</tr>
 				{{#each items}}
 				<tr>
-					<td width="80%"><b>\{{getProduct({{this.ProductID}}).ProductName}}</b><small> x {{this.OrderPieceQuantity}}</small></td>
+					<td width="80%"><b>\{{getProduct({{this.ProductID}}).ProductName}}</b></td>
 					<td width="20%" class="text-right" ng-bind="getProduct({{this.ProductID}}).ProductPrice * {{this.OrderPieceQuantity}} | currency:'$'"></td>
 				</tr>
 				{{/each}}

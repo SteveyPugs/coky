@@ -150,4 +150,12 @@ var app = angular.module("Bakery", ["ngStorage","bootstrap.fileField", "smart-ta
 		var output = filterFilter(array, expression, customComparator);
 		return output;
 	};
-}]);
+}]).filter('range', function() {
+	return function(input, total) {
+		total = parseInt(total);
+		for (var i=0; i<total; i++){
+			input.push(i);
+		}	
+		return input;
+	};
+});

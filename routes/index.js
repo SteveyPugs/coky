@@ -40,51 +40,7 @@ router.get("/store", function(req, res){
 
 router.get("/orders", function(req, res){
 	if(req.cookies.User){
-		models.Order.findAll({
-			where:{
-				UserID: req.cookies.User.UserID
-			},
-			order: "createdAt DESC"
-		}).then(function(order){
-			var orders = lodash.pluck(order, "dataValues");
-			var orderids = lodash.pluck(orders, "OrderID");
-			var useraddressids = lodash.pluck(orders, "UserAddressID");
-			models.UserAddress.findAll({
-				where: {
-					UserAddressID: {
-						$in: useraddressids
-					}
-				}
-			}).then(function(addresses){
-				models.OrderPiece.findAll({
-					where: {
-						OrderID: {
-							$in: orderids
-						}
-					}
-				}).then(function(pieces){
-					var orderpieces = lodash.pluck(pieces, "dataValues");
-					var addresspieces = lodash.pluck(addresses, "dataValues");
-					for(var order in orders){
-						orders[order].OrderPieces = lodash.filter(orderpieces, {
-							OrderID: orders[order].OrderID
-						});
-						orders[order].OrderAddress = lodash.find(addresspieces, {
-							UserAddressID: orders[order].UserAddressID
-						});
-					}
-					res.render("order", {
-						orders: orders
-					});
-				}).catch(function(err){
-					res.send(err);
-				});
-			}).catch(function(err){
-				res.send(err);
-			});
-		}).catch(function(err){
-			res.send(err);
-		});
+		res.render("order");
 	}
 	else{
 		res.redirect("/store");
@@ -189,11 +145,15 @@ router.post("/store/cart/charge", function(req, res){
 
 router.get("/store/cart/confirmation/:OrderGUID", function(req, res){
 	models.Order.find({
-		OrderGUID: req.params.OrderGUID
+		where:{
+			OrderGUID: req.params.OrderGUID
+		}
 	}).then(function(order){
 		stripe.charges.retrieve(order.OrderPaidConfirmation, function(err, charge){
 			models.UserAddress.find({
-				UserAddressID: order.UserAddressID
+				where:{
+					UserAddressID: order.UserAddressID
+				}
 			}).then(function(address){
 				models.OrderPiece.findAll({
 					where: {
@@ -369,6 +329,59 @@ router.get("/api/address/:UserID", function(req, res){
 		}
 	}).then(function(addresses){
 		res.send(lodash.pluck(addresses, "dataValues"));
+	}).catch(function(err){
+		res.send(err);
+	});
+});
+
+router.get("/api/order/:UserID", function(req, res){
+	var query = {
+		UserID: req.params.UserID
+	};
+	if(req.query){
+		query["createdAt"] = {
+			$gte: req.query.DateFrom,
+			$lte: req.query.DateTo
+		}
+	}
+	models.Order.findAll({
+		where: query,
+		order: "createdAt DESC"
+	}).then(function(order){
+		var orders = lodash.pluck(order, "dataValues");
+		var orderids = lodash.pluck(orders, "OrderID");
+		var useraddressids = lodash.pluck(orders, "UserAddressID");
+		models.UserAddress.findAll({
+			where: {
+				UserAddressID: {
+					$in: useraddressids
+				}
+			}
+		}).then(function(addresses){
+			models.OrderPiece.findAll({
+				where: {
+					OrderID: {
+						$in: orderids
+					}
+				}
+			}).then(function(pieces){
+				var orderpieces = lodash.pluck(pieces, "dataValues");
+				var addresspieces = lodash.pluck(addresses, "dataValues");
+				for(var order in orders){
+					orders[order].OrderPieces = lodash.filter(orderpieces, {
+						OrderID: orders[order].OrderID
+					});
+					orders[order].OrderAddress = lodash.find(addresspieces, {
+						UserAddressID: orders[order].UserAddressID
+					});
+				}
+				res.send(orders);
+			}).catch(function(err){
+				res.send(err);
+			});
+		}).catch(function(err){
+			res.send(err);
+		});
 	}).catch(function(err){
 		res.send(err);
 	});

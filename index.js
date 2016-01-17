@@ -17,18 +17,7 @@ app.use("/", routes);
 app.engine(".html", exphbs({
 	defaultLayout: "main",
 	extname: ".html",
-	partialsDir: "views/partials/",
-	helpers: {
-        formatDate: function(date, format){
-            return moment(date).format(format);
-        },
-        decimal: function(val, currency){
-        	return currency + val.toFixed(2);
-        },
-        capitalize: function(text){
-        	return text.toUpperCase();
-        }
-    }
+	partialsDir: "views/partials/"
 }));
 app.set("view engine", ".html");
 
