@@ -15,7 +15,7 @@
 	<br>
 	<div class="row">
 		<div class="col-lg-12 text-center">
-			<ul class="pagination">
+			<ul class="pagination" ng-if="orders.length > 0">
 				<li><button class="btn btn-md btn-primary" ng-disabled="currentPage === 1" ng-click="goNext(-1)"><span aria-hidden="true">&laquo;</span></button></li>
 				<li ng-repeat="n in [] | range : totalItems"><button ng-class="(n + 1) === currentPage ? 'btn-default' : 'btn-success'" class="btn btn-md" ng-click="goPage(n + 1)">\{{n + 1}}</button></li>
 				<li><button class="btn btn-md btn-primary" ng-disabled="currentPage === totalItems" ng-click="goNext(1)"><span aria-hidden="true">&raquo;</span></button></li>
@@ -84,5 +84,10 @@
 			</div>
 		</div>
 	</div>
+	<div class="row" ng-if="orders.length === 0">
+		<div class="col-lg-12">
+			<h5>No orders</h5>
+		</div>
+	</div>	
 </div>
 <script src="/js/controllers/order.controller.js"></script>
