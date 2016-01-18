@@ -1,4 +1,4 @@
-var app = angular.module("Bakery", ["ngStorage","bootstrap.fileField", "smart-table", "ngCookies"]).run(function($rootScope, $http){
+var app = angular.module("Bakery", ["ngStorage","bootstrap.fileField", "smart-table", "ngCookies", "ui.bootstrap"]).run(function($rootScope, $http){
 	$http.get("/api/product").success(function(data){
 		for(var item in data){
 			for(var key in data[item]){
