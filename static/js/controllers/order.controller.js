@@ -9,12 +9,12 @@ app.controller("Orders", function($scope, $sessionStorage, $http, $cookies, $sce
 		$scope.D2;
 		switch($scope.history){
 			case "6M":
-				$scope.D1 = moment().subtract(6, "months").format("YYYY-MM-DD HH:mm:ss");
-				$scope.D2 = moment().format("YYYY-MM-DD HH:mm:ss");
+				$scope.D1 = moment().utc().subtract(6, "months").format("YYYY-MM-DD HH:mm:ss");
+				$scope.D2 = moment().utc().format("YYYY-MM-DD HH:mm:ss");
 				break;
 			case "30D":
-				$scope.D1 = moment().subtract(30, "days").format("YYYY-MM-DD HH:mm:ss");
-				$scope.D2 = moment().format("YYYY-MM-DD HH:mm:ss");
+				$scope.D1 = moment().utc().subtract(30, "days").format("YYYY-MM-DD HH:mm:ss");
+				$scope.D2 = moment().utc().format("YYYY-MM-DD HH:mm:ss");
 				break;
 			default:
 				$scope.D1 = moment().year($scope.history).month(0).date(1).format("YYYY-MM-DD");

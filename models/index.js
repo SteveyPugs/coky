@@ -1,10 +1,8 @@
 var config = require("../config").database;
-var moment = require('moment-timezone');
 var Sequelize = require("sequelize");
 var sequelize = new Sequelize(config.database, config.username, config.password, {
 	host: config.host,
-	dialect: "mysql",
-	timezone: moment.tz("America/New_York").format("Z")
+	dialect: "mysql"
 });
 
 var models = [{
