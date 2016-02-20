@@ -152,4 +152,57 @@ app.controller("Portal", function($scope, $http, $filter, $uibModal, Upload){
 			}
 		});
 	};
+	$scope.openCategory = function (size) {
+		var productModal = $uibModal.open({
+			animation: true,
+			templateUrl: "/modals/category.html",
+			controller: function($scope, $uibModalInstance, init){
+				$scope.data = {};
+				$scope.cancel = function(){$uibModalInstance.dismiss("cancel")};
+				$scope.ok = function(){
+					$http.post("/api/category", {
+						CategoryName: $scope.data.CategoryName
+					}).success(function(data){
+						init();
+						$uibModalInstance.close();
+					}).error(function(err){
+						console.log(err);
+					});
+				};
+			},
+			size: size,
+			resolve: {
+				init: function(){
+					return $scope.init;
+				}
+			}
+		});
+	};
+	$scope.deleteCategory = function (size, categoryid) {
+		$scope.categoryid = categoryid;
+		var deleteConfirmtModal = $uibModal.open({
+			animation: true,
+			templateUrl: "/modals/confirm.html",
+			controller: function($scope, $uibModalInstance, categoryid, init){
+				$scope.cancel = function(){$uibModalInstance.dismiss("cancel")};
+				$scope.ok = function(){
+					$http.delete("/api/category/" + categoryid).success(function(data){
+						init();
+						$uibModalInstance.close();
+					}).error(function(err){
+						console.log(err);
+					});
+				};
+			},
+			size: size,
+			resolve: {
+				categoryid: function(){
+					return $scope.categoryid;
+				},
+				init: function(){
+					return $scope.init;
+				}
+			}
+		});
+	};
 });

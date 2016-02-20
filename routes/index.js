@@ -501,6 +501,20 @@ router.post("/api/category", function(req, res){
 	});
 });
 
+router.delete("/api/category/:CategoryID", function(req, res){
+	models.Category.update({
+		deletedAt: moment().format("YYYY-MM-DD"),
+	},{
+		where:{
+			CategoryID: req.params.CategoryID
+		}
+	}).then(function(results){
+		res.send(results);
+	}).catch(function(err){
+		res.send(err);
+	});	
+});
+
 router.post("/api/address", function(req, res){
 	models.UserAddress.update({
 		UserAddressDefault: false

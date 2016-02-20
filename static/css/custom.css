@@ -54,11 +54,6 @@ td{
 .st-sort-descent:before{
 	content: '\25BC';
 }
-
-a, a:hover{
-	color: white;
-}
-
 /*WELL CSS*/
 
 .well{

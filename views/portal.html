@@ -2,11 +2,12 @@
 	{{>nav-portal}}
 	<div class="row">
 		<div class="col-md-12">
-			<div class="tab-content">
-				<div class="tab-pane active" id="products">
-					<h4><b>List of Products</b></h4>
-					<button type="button" class="btn btn-success btn-xs" ng-click="openProduct('lg', 'Add')">Add</button>
-					<br><br>
+
+			<uib-tabset justified="true">
+				<uib-tab heading="Products">
+					<br>
+					<button type="button" class="btn btn-success btn-sm btn-block" ng-click="openProduct('lg', 'Add')">Add</button>
+					<br>
 					<table st-set-filter="customFilter" st-table="products" st-safe-src="safeproducts" class="table table-striped table-bordered">
 						<thead>
 							<tr>
@@ -47,11 +48,11 @@
 							</tr>
 						</tfoot>
 					</table>
-				</div>
-				<div class="tab-pane" id="categorys">
-					<h4><b>List of Categorys</b></h4>
-					<button type="button" class="btn btn-xs btn-success" data-toggle="modal" data-target="#AddCatModal">Add</button>
-					<br><br>
+				</uib-tab>
+				<uib-tab heading="Categories">
+					<br>
+					<button type="button" class="btn btn-success btn-sm btn-block" ng-click="openCategory('sm')">Add</button>
+					<br>
 					<table st-set-filter="customFilter" st-table="categories" st-safe-src="safecategories" class="table table-striped table-bordered">
 						<thead>
 							<tr>
@@ -63,7 +64,7 @@
 							<tr ng-repeat="category in categories">
 								<td class="text-center" ng-bind="category.CategoryName"></td>
 								<td class="text-center">
-									<button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash fa-2x"></i></button>
+									<button type="button" class="btn btn-xs btn-danger" ng-click="deleteCategory('sm', category.CategoryID)"><i class="fa fa-trash fa-2x"></i></button>
 								</td>
 							</tr>
 						</tbody>
@@ -75,14 +76,10 @@
 							</tr>
 						</tfoot>
 					</table>
-				</div>
-				<div class="tab-pane" id="orders">
-					Orders
-				</div>
-				<div class="tab-pane" id="users">
-					Users
-				</div>
-			</div>
+				</uib-tab>
+				<uib-tab heading="Orders">Orders</uib-tab>
+				<uib-tab heading="Admin Users">Users</uib-tab>
+			</uib-tabset>
 		</div>
 	</div>
 </div>
