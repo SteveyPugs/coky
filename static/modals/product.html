@@ -1,0 +1,32 @@
+<form>
+    <div class="modal-header">
+        <h3 class="modal-title">{{title}} Product</h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label>Name of Product</label>
+            <input type="text" class="form-control" required title="A product name is needed" ng-model="data.ProductName">
+        </div>
+        <div class="form-group">
+            <label>Price</label>
+            <input type="number" class="form-control" min="0" max="99" step="0.01" required title="A product price is needed" ng-model="data.ProductPrice">
+        </div>
+        <div class="form-group">
+            <label>Image</label><br>
+            <input class="btn btn-default" type="file" ngf-select ng-model="data.ProductImage" name="file" accept="image/*" required ngf-model-invalid="errorFiles">
+            <img ng-show="myForm.file.$valid" ngf-thumbnail="data.ProductImage" class="thumb">
+        </div>
+        <div class="form-group">
+            <label>Category</label>
+            <select class="form-control" required title="A category is needed" ng-model="data.CategoryID" ng-options="category.CategoryID as category.CategoryName for category in categories"></select>
+        </div>
+        <div class="form-group">
+            <label>Status</label>
+            <select class="form-control" required title="A status is needed" ng-model="data.ProductStatus" ng-options="item.StatusID as item.StatusName for item in status"></select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success btn-sm" type="button" ng-disabled="myForm.$invalid" ng-click="ok('{{title}}')">{{title}}</button>
+        <button class="btn btn-danger btn-sm" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+<form>

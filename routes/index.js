@@ -24,6 +24,7 @@ var router = express.Router();
 var server_config = require("../config").server;
 router.use(cookieParser("baKeShoP"));
 var stripe = require("stripe")(stripe_config.sk);
+var moment  = require("moment");
 
 /* Site Routes */
 router.get("/", function(req, res){
@@ -308,7 +309,7 @@ router.get("/api/product", function(req, res){
 		where:{
 			deletedAt: null
 		},
-		attributes: ["ProductID", "ProductName", "ProductPrice",  "ProductImage", "ProductImageType", "ProductActive"],
+		attributes: ["ProductID", "ProductName", "ProductPrice",  "ProductImage", "ProductImageType", "ProductStatus"],
 		include: [{
 			model: models.Category,
 			where: {
@@ -317,6 +318,25 @@ router.get("/api/product", function(req, res){
 		}]
 	}).then(function(products){
 		res.send(products);
+	}).catch(function(err){
+		res.send(err);
+	});
+});
+
+router.get("/api/product/:ProductID", function(req, res){
+	models.Product.find({
+		where:{
+			ProductID: req.params.ProductID
+		},
+		attributes: ["ProductID", "ProductName", "ProductPrice", "ProductStatus"],
+		include: [{
+			model: models.Category,
+			where: {
+				CategoryID: Sequelize.col("Product.CategoryID")
+			}
+		}]
+	}).then(function(product){
+		res.send(product);
 	}).catch(function(err){
 		res.send(err);
 	});
@@ -402,7 +422,7 @@ router.post("/api/product", upload.single("ProductImage"), function(req, res){
 				ProductPrice: req.body.ProductPrice,
 				ProductImage: fileGUID,
 				ProductImageType: req.file.mimetype,
-				ProductActive: req.body.ProductActive,
+				ProductStatus: req.body.ProductStatus,
 				CategoryID: req.body.CategoryID,
 			}).then(function(results){
 				res.send(results);
@@ -411,6 +431,64 @@ router.post("/api/product", upload.single("ProductImage"), function(req, res){
 			});
 		}
 	});
+});
+
+router.put("/api/product", upload.single("ProductImage"), function(req, res){
+	models.Product.find({
+		where:{
+			ProductID: req.body.ProductID
+		}
+	}).then(function(product){
+		s3.deleteObject({
+			Bucket: amazon_config.Bucket,
+			Key: product.ProductImage,
+		}, function(err, data) {
+			if(err) res.send(err);
+			else{
+				var fileGUID = chance.guid();
+				s3.putObject({
+					Bucket: amazon_config.Bucket,
+					Key: fileGUID,
+					ACL: "public-read",
+					Body: req.file.buffer
+				}, function(err, data){
+					if(err) res.send(err);
+					else{
+						models.Product.update({
+							ProductName: req.body.ProductName,
+							ProductImage: fileGUID,
+							ProductPrice: req.body.ProductPrice,
+							ProductImageType: req.file.mimetype,
+							ProductStatus: req.body.ProductStatus,
+							CategoryID: req.body.CategoryID,
+						},{
+							where:{
+								ProductID: req.body.ProductID
+							}
+						}).then(function(results){
+							res.send(results);
+						}).catch(function(err){
+							res.send(err);
+						});
+					}
+				});
+			}
+		});
+	});
+});
+
+router.delete("/api/product/:ProductID", function(req, res){
+	models.Product.update({
+		deletedAt: moment().format("YYYY-MM-DD"),
+	},{
+		where:{
+			ProductID: req.params.ProductID
+		}
+	}).then(function(results){
+		res.send(results);
+	}).catch(function(err){
+		res.send(err);
+	});	
 });
 
 router.post("/api/category", function(req, res){

@@ -1,62 +1,155 @@
-app.controller("Portal", function($scope, $http, $filter){
-	$http.get("/api/product").success(function(data){
-		for(var item in data){
-			for(var key in data[item]){
-				if(key === "Category"){
-					data[item]["CategoryName"] = data[item][key].CategoryName;
-					delete data[item]["Category"];
-				}
-				if(key === "ProductActive"){
-					if(data[item][key]){
-						data[item]["ProductStatus"] = "Live";
-					} else {
-						data[item]["ProductStatus"] = "Draft";
+app.controller("Portal", function($scope, $http, $filter, $uibModal, Upload){
+	$scope.init = function(){
+		$http.get("/api/product").success(function(data){
+			for(var item in data){
+				for(var key in data[item]){
+					if(key === "Category"){
+						data[item]["CategoryName"] = data[item][key].CategoryName;
+						delete data[item]["Category"];
 					}
-					delete data[item]["ProductActive"];
-				}
-			}	
-		}
-		$scope.products = data;
-		$scope.safeproducts = data;
-		$http.get("/api/category").success(function(data){
-			$scope.categories = data;
-			$scope.safecategories = data;
+					if(key === "ProductStatus"){
+						switch(data[item]["ProductStatus"]){
+							case 1:
+								data[item]["ProductStatus"] = "Draft";
+								break;
+							case 2:
+								data[item]["ProductStatus"] = "Live";
+								break;
+						}
+					}
+				}	
+			}
+			$scope.products = data;
+			$scope.safeproducts = data;
+			$http.get("/api/category").success(function(data){
+				$scope.categories = data;
+				$scope.safecategories = data;
+			}).error(function(err){
+				console.log(err);
+			});
 		}).error(function(err){
 			console.log(err);
 		});
-	}).error(function(err){
-		console.log(err);
-	});
-	$scope.createProduct = function(){
-		var fd = new FormData();
-		fd.append("ProductImage", $scope.image);
-		fd.append("ProductName", $scope.ProductName);
-		fd.append("ProductPrice", $scope.ProductPrice);
-		fd.append("ProductActive", $scope.select.active);
-		fd.append("CategoryID", $scope.select.category);
-		$http.post("/api/product", fd, {
-			transformRequest: angular.identity,
-			headers: {
-				"Content-Type": undefined
+	}
+	$scope.init();
+	$scope.openProduct = function (size, title, productid) {
+		$scope.productid = productid;
+		$scope.title = title;
+		var productModal = $uibModal.open({
+			animation: true,
+			templateUrl: "/modals/product.html",
+			controller: function($scope, $uibModalInstance, title, productid, init){
+				$scope.title = title;
+				$scope.data = {};
+				$scope.status = [{
+					StatusID: 1,
+					StatusName: "Draft"
+				},{
+					StatusID: 2,
+					StatusName: "Live"
+				}];
+				if(title === "Edit"){
+					$http.get("/api/product/" + productid).success(function(data){
+						$scope.data.ProductName = data.ProductName;
+						$scope.data.ProductPrice = data.ProductPrice;
+						$scope.data.ProductStatus = data.ProductStatus;
+						$scope.data.CategoryID = data.Category.CategoryID;
+					}).error(function(err){
+						console.log(err);
+					});
+				}
+				$scope.cancel = function(){$uibModalInstance.dismiss("cancel")};
+				$scope.ok = function(){
+					switch(title){
+						case "Add":
+							Upload.upload({
+								url: "/api/product",
+								data: {
+									"ProductImage": $scope.data.ProductImage,
+									"ProductName": $scope.data.ProductName,
+									"ProductPrice": $scope.data.ProductPrice,
+									"ProductStatus": $scope.data.ProductStatus,
+									"CategoryID": $scope.data.CategoryID,
+								},
+								method: "POST"
+							}).then(function(res){
+								$scope.data.ProductImage = "";
+								$scope.data.ProductName = "";
+								$scope.data.ProductPrice = "";
+								$scope.data.ProductStatus = "";
+								$scope.data.CategoryID = "";
+								init();
+								$uibModalInstance.close();
+							}, function(err){
+								console.log(err.status);
+							});
+							break;
+						case "Edit":
+							Upload.upload({
+								url: "/api/product",
+								data: {
+									"ProductImage": $scope.data.ProductImage,
+									"ProductName": $scope.data.ProductName,
+									"ProductPrice": $scope.data.ProductPrice,
+									"ProductStatus": $scope.data.ProductStatus,
+									"CategoryID": $scope.data.CategoryID,
+									"ProductID": productid
+								},
+								method: "PUT"
+							}).then(function(res){
+								$scope.data.ProductImage = "";
+								$scope.data.ProductName = "";
+								$scope.data.ProductPrice = "";
+								$scope.data.ProductStatus = "";
+								$scope.data.CategoryID = "";
+								init();
+								$uibModalInstance.close();
+							}, function(err){
+								console.log(err.status);
+							});
+							break;
+					}
+				};
+			},
+			size: size,
+			resolve: {
+				title: function(){
+					return $scope.title;
+				},
+				productid: function(){
+					return $scope.productid;
+				},
+				init: function(){
+					return $scope.init;
+				}
 			}
-		}).success(function(data){
-			$scope.image = "";
-			$scope.ProductName = "";
-			$scope.ProductPrice = "";
-			$scope.select = "";
-			$("#AddProductModal").modal("hide");
-		}).error(function(err){
-			//do something on error
 		});
 	};
-	$scope.createCategory = function(){
-		$http.post("/api/category", {
-			CategoryName: $scope.Category
-		}).success(function(data){
-			$scope.Category = "";
-			$("#AddCatModal").modal("hide");
-		}).error(function(err){
-			//do something on error
+	$scope.deleteProduct = function (size, productid) {
+		$scope.productid = productid;
+		var deleteConfirmtModal = $uibModal.open({
+			animation: true,
+			templateUrl: "/modals/confirm.html",
+			controller: function($scope, $uibModalInstance, productid, init){
+				$scope.cancel = function(){$uibModalInstance.dismiss("cancel")};
+				$scope.ok = function(){
+					$http.delete("/api/product/" + productid).success(function(data){
+						init();
+						$uibModalInstance.close();
+					}).error(function(err){
+						console.log(err);
+					});
+				};
+			},
+			size: size,
+			resolve: {
+				productid: function(){
+					return $scope.productid;
+				},
+				init: function(){
+					return $scope.init;
+				}
+			}
 		});
 	};
 });

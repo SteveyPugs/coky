@@ -22,8 +22,8 @@ module.exports = function(sequelize, DataTypes){
 			type: DataTypes.STRING,
 			allowNull: false
 		},
-		ProductActive: {
-			type: DataTypes.BOOLEAN,
+		ProductStatus: {
+			type: DataTypes.INTEGER,
 			allowNull: false
 		}
 	}, {
