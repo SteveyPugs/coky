@@ -6,38 +6,48 @@
 	<form method="post" action="/store/cart/payment">
 		<div class="row" ng-if="account">
 			<div class="col-lg-12">
-				<div class="checkbox">
-					<label><input type="checkbox" name="UserAddressSave" value="Save"> Save this Address</label>
-				</div>
+				<i>Choose an existing address</i>
+				<select class="form-control"  ng-model="addressSelected" required ng-options="address.UserAddressID as (address.UserAddressFullName + ' ' + address.UserAddressStreet + ', ' + address.UserAddressCity + ', ' + address.UserAddressState + ' ' + address.UserAddressZip) for address in addresses" ng-change="setAddress(addressSelected)"></select>
 			</div>
 		</div>
 		<br>
 		<div class="row">
 			<div class="col-lg-6">
 				<label>Full Name</label>
-				<input type="text" required class="form-control" name="UserAddressFullName" placeholder="John Smith">
+				<input type="text" required class="form-control" name="UserAddressFullName" ng-model="UserAddressFullName" placeholder="John Smith">
 			</div>
 			<div class="col-lg-6">
 				<label>Street Address</label>
-				<input type="text" required class="form-control" name="UserAddressStreet" placeholder="123 Apple Street">
+				<input type="text" required class="form-control" name="UserAddressStreet" ng-model="UserAddressStreet" placeholder="123 Apple Street">
 			</div>
 		</div>
 		<br>
 		<div class="row">
 			<div class="col-lg-6">
 				<label>City</label>
-				<input type="text" required class="form-control" name="UserAddressCity" placeholder="San Francisco">
+				<input type="text" required class="form-control" name="UserAddressCity" ng-model="UserAddressCity" placeholder="San Francisco">
 			</div>
 			<div class="col-lg-6">
 				<label>State</label>
-				<input type="text" required class="form-control" name="UserAddressState" placeholder="California">
+				<select class="form-control" required name="UserAddressState" ng-model="UserAddressState">
+					<option></option>
+					<option ng-repeat="state in states" value="\{{state.name}}">\{{state.name}}</option>
+				</select>
 			</div>
 		</div>
 		<br>
 		<div class="row">
 			<div class="col-lg-6">
 				<label>Zip</label>
-				<input type="text" required class="form-control" name="UserAddressZip" placeholder="90210">
+				<input type="text" required class="form-control" name="UserAddressZip" ng-model="UserAddressZip" placeholder="90210">
+			</div>
+		</div>
+		<br>
+		<div class="row" ng-if="account && preset">
+			<div class="col-lg-12">
+				<div class="checkbox">
+					<label><input type="checkbox" name="UserAddressSave" value="Save"> Save this Address</label>
+				</div>
 			</div>
 		</div>
 		<br>
