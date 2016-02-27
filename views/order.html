@@ -52,7 +52,8 @@
 						<div class="col-lg-4">
 							<b>Order ID</b>
 							<br>
-							<a ng-href="/store/cart/confirmation/\{{order.OrderGUID}}" target="_blank" ng-bind="order.OrderGUID | uppercase">Track Shipment</a>
+							<a ng-if="order.OrderPaid" style="color:white;" ng-href="/store/cart/confirmation/\{{order.OrderGUID}}" target="_blank" ng-bind="order.OrderGUID | uppercase"></a>
+							<a ng-if="!order.OrderPaid" style="color:white;" target="_blank" ng-bind="order.OrderGUID | uppercase"></a>
 						</div>
 					</div>
 				</div>
@@ -71,13 +72,21 @@
 							</div>
 						</div>
 						<div class="col-lg-4">
-							<h4>Costs <small ng-if="order.OrderPaid"><i class="fa fa-check-circle" ></i> Paid</small><small ng-if="!order.OrderPaid"><i class="fa fa-times-circle" ></i> Not Paid</small></h4>
+							<h4>Costs <small ng-if="order.OrderPaid"><i class="fa fa-check-circle" ></i> Paid</small><small ng-if="!order.OrderPaid"><i class="fa fa-times-circle" ></i> Refunded</small></h4>
 							<hr>
 							Shipping: \{{order.OrderShipping | currency:'$'}}
 							<br>
 							Tax: \{{order.OrderTax | currency:'$'}}
 							<br><br>
-							<a class="btn btn-primary btn-sm" ng-href="#" ng-disabled="\{{order.OrderShipCode || 'true'}}">Track Shipment</a>
+							<ANY ng-switch="order.OrderShipper">
+								<ANY ng-switch-when="UPS">
+									<a class="btn btn-info btn-xs" target="_blank" ng-href="https://wwwapps.ups.com/WebTracking/track?track=yes&trackNums=\{{order.OrderShipCode}}"><img src="/img/ups.png" /></a>
+								</ANY>
+								<ANY ng-switch-when="FedEx">
+									<a class="btn btn-info btn-xs" target="_blank" ng-href="https://www.fedex.com/Tracking?action=track&tracknumbers=\{{order.OrderShipCode}}"><img src="/img/fedex.png" /></a>
+								</ANY>
+								<ANY ng-switch-default>\{{order.OrderShipper}}</ANY>
+							</ANY>	
 						</div>
 					</div>					
 				</div>    

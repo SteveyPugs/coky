@@ -31,6 +31,19 @@ app.controller("Orders", function($scope, $sessionStorage, $http, $cookies, $sce
 					});
 					return product;
 				};
+				var UPS = new RegExp("1Z?[0-9A-Z]{3}?[0-9A-Z]{3}?[0-9A-Z]{2}?[0-9A-Z]{4}?[0-9A-Z]{3}?[0-9A-Z]|[\dT]\d\d\d?\d\d\d\d?\d\d\d");
+				var FedEx = new RegExp("^[0-9]{15}");
+				for(var order in orders){
+					if(UPS.test(orders[order].OrderShipCode)){
+						orders[order].OrderShipper = "UPS"
+					}
+					else if(FedEx.test(orders[order].OrderShipCode)){
+						orders[order].OrderShipper = "FedEx"
+					}
+					else{
+						orders[order].OrderShipper = "No Tracking Available"
+					}
+				}
 			}).error(function(err){
 				console.log(err);
 			});

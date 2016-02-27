@@ -24,6 +24,26 @@ app.controller("Portal", function($scope, $http, $filter, $uibModal, Upload){
 			$http.get("/api/category").success(function(data){
 				$scope.categories = data;
 				$scope.safecategories = data;
+				$http.get("/api/order").success(function(data){
+					for(var item in data){
+						for(var key in data[item]){
+							if(key === "OrderPaid"){
+								switch(data[item]["OrderPaid"]){
+									case false:
+										data[item]["OrderStatus"] = "Refunded";
+										break;
+									case true:
+										data[item]["OrderStatus"] = "Paid";
+										break;
+								}
+							}
+						}	
+					}
+					$scope.orders = data;
+					$scope.safeorders = data;
+				}).error(function(err){
+					console.log(err);
+				});
 			}).error(function(err){
 				console.log(err);
 			});
@@ -198,6 +218,44 @@ app.controller("Portal", function($scope, $http, $filter, $uibModal, Upload){
 			resolve: {
 				categoryid: function(){
 					return $scope.categoryid;
+				},
+				init: function(){
+					return $scope.init;
+				}
+			}
+		});
+	};
+	$scope.saveShipping = function(guid, code) {
+		if(code.length < 1) code = null;
+		$http.put("/api/order",{
+			OrderGUID: guid,
+			OrderShipCode: code
+		}).success(function(data){
+			console.log("order updated");
+		}).error(function(err){
+			console.log(err);
+		});
+	};
+	$scope.refundOrder = function (size, orderid) {
+		$scope.orderid = orderid;
+		var deleteConfirmtModal = $uibModal.open({
+			animation: true,
+			templateUrl: "/modals/confirm.html",
+			controller: function($scope, $uibModalInstance, orderid, init){
+				$scope.cancel = function(){$uibModalInstance.dismiss("cancel")};
+				$scope.ok = function(){
+					$http.get("/admin/order/" + orderid + "/refund").success(function(data){
+						init();
+						$uibModalInstance.close();
+					}).error(function(err){
+						console.log(err);
+					});
+				};
+			},
+			size: size,
+			resolve: {
+				orderid: function(){
+					return $scope.orderid;
 				},
 				init: function(){
 					return $scope.init;

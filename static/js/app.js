@@ -1,4 +1,4 @@
-var app = angular.module("Bakery", ["ngStorage","bootstrap.fileField", "smart-table", "ngCookies", "ui.bootstrap", "ngFileUpload"]).run(function($rootScope, $http){
+var app = angular.module("Bakery", ["ngStorage","bootstrap.fileField", "smart-table", "ngCookies", "ui.bootstrap", "ngFileUpload", "xeditable"]).run(function($rootScope, $http){
 	$http.get("/api/product").success(function(data){
 		for(var item in data){
 			for(var key in data[item]){
@@ -160,4 +160,6 @@ var app = angular.module("Bakery", ["ngStorage","bootstrap.fileField", "smart-ta
 		}	
 		return input;
 	};
+}).run(function(editableOptions){
+	editableOptions.theme = "bs3";
 });

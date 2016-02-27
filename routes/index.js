@@ -150,40 +150,45 @@ router.get("/store/cart/confirmation/:OrderGUID", function(req, res){
 			OrderGUID: req.params.OrderGUID
 		}
 	}).then(function(order){
-		stripe.charges.retrieve(order.OrderPaidConfirmation, function(err, charge){
-			models.UserAddress.find({
-				where:{
-					UserAddressID: order.UserAddressID
-				}
-			}).then(function(address){
-				models.OrderPiece.findAll({
-					where: {
-						OrderID: order.OrderID
+		if(order.OrderPaid){
+			stripe.charges.retrieve(order.OrderPaidConfirmation, function(err, charge){
+				models.UserAddress.find({
+					where:{
+						UserAddressID: order.UserAddressID
 					}
-				}).then(function(pieces){
-					res.render("confirmation",{
-						confirmation: req.params.OrderGUID.toUpperCase(),
-						address: address.dataValues,
-						email: charge.receipt_email,
-						totals: {
-							subtotal: order.OrderSubTotal,
-							total: order.OrderTotal,
-							shipping: order.OrderShipping,
-							tax: order.OrderTax
-						},
-						payment: {
-							cardtype: charge.source.brand.toLowerCase(),
-							last4: charge.source.last4
-						},
-						items: lodash.pluck(pieces, "dataValues")
+				}).then(function(address){
+					models.OrderPiece.findAll({
+						where: {
+							OrderID: order.OrderID
+						}
+					}).then(function(pieces){
+						res.render("confirmation",{
+							confirmation: req.params.OrderGUID.toUpperCase(),
+							address: address.dataValues,
+							email: charge.receipt_email,
+							totals: {
+								subtotal: order.OrderSubTotal,
+								total: order.OrderTotal,
+								shipping: order.OrderShipping,
+								tax: order.OrderTax
+							},
+							payment: {
+								cardtype: charge.source.brand.toLowerCase(),
+								last4: charge.source.last4
+							},
+							items: lodash.pluck(pieces, "dataValues")
+						});
+					}).catch(function(err){
+						res.send(err);
 					});
 				}).catch(function(err){
 					res.send(err);
 				});
-			}).catch(function(err){
-				res.send(err);
 			});
-		});
+		}
+		else{
+			res.redirect("/store");
+		}
 	}).catch(function(err){
 		res.send(err);
 	});
@@ -407,6 +412,66 @@ router.get("/api/order/:UserID", function(req, res){
 	});
 });
 
+router.get("/api/order", function(req, res){
+	models.Order.findAll({
+		where: {
+			deletedAt: null
+		},
+		order: "createdAt DESC"
+	}).then(function(orders){
+		var orders = lodash.pluck(orders, "dataValues");
+		var orderids = lodash.pluck(orders, "OrderID");
+		var useraddressids = lodash.pluck(orders, "UserAddressID");
+		models.UserAddress.findAll({
+			where: {
+				UserAddressID: {
+					$in: useraddressids
+				}
+			}
+		}).then(function(useraddresses){
+			var useraddresses = lodash.pluck(useraddresses, "dataValues");
+			models.OrderPiece.findAll({
+				where: {
+					OrderID: {
+						$in: orderids
+					}
+				}
+			}).then(function(orderpieces){
+				var orderpieces = lodash.pluck(orderpieces, "dataValues");
+				for(var order in orders){
+					orders[order].OrderPieces = lodash.filter(orderpieces, {
+						OrderID: orders[order].OrderID
+					});
+					orders[order].OrderAddress = lodash.find(useraddresses, {
+						UserAddressID: orders[order].UserAddressID
+					});
+				}
+				res.send(orders);
+			}).catch(function(err){
+				res.send(err);
+			});
+		}).catch(function(err){
+			res.send(err);
+		});
+	}).catch(function(err){
+		res.send(err);
+	});
+});
+
+router.put("/api/order", function(req, res){
+	models.Order.update({
+		OrderShipCode: req.body.OrderShipCode
+	},{
+		where:{
+			OrderGUID: req.body.OrderGUID
+		}
+	}).then(function(updatedorder){
+		res.send("updated");
+	}).catch(function(err){
+		res.send(err);
+	});
+});
+
 router.post("/api/product", upload.single("ProductImage"), function(req, res){
 	var fileGUID = chance.guid();
 	s3.putObject({
@@ -582,6 +647,39 @@ router.post("/admin/register", function(req, res){
  	}).catch(function(err){
  		res.send(err);
  	});
+});
+
+router.get("/admin/order/:OrderID/refund", function(req, res){
+	models.Order.find({
+		where: {
+			OrderID: req.params.OrderID
+		}
+	}).then(function(order){
+		stripe.refunds.create({
+			charge: order.OrderPaidConfirmation
+		}, function(err, refund) {
+			if(err) res.send(err);
+			models.Order.update({
+				OrderShipCode: null,
+				OrderPaid: false,
+				OrderTotal: 0,
+				OrderTax: 0,
+				OrderShipping: 0,
+				OrderSubTotal: 0
+			}, {
+				where:{
+					OrderID: req.params.OrderID
+				}
+			}).then(function(refundorder){
+				res.send("Refunded");
+			}).catch(function(err){
+				res.send(err);
+			});
+		});
+	}).catch(function(err){
+		res.send(err);
+	});
+
 });
 
 router.get("/admin", function(req, res){
