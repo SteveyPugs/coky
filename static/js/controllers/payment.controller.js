@@ -1,4 +1,7 @@
 app.controller("Payment", function($scope, $localStorage, $sessionStorage, $http, $cookies, Stripe){
+	if($localStorage.cartCount === 0){
+		window.location.href = "/store/cart";
+	}
 	$http.get("/api/product").success(function(data){
 		for(var item in data){
 			for(var key in data[item]){
