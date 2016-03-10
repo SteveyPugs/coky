@@ -9,7 +9,7 @@ app.controller("Cart", function($scope, $localStorage, $sessionStorage, $http, $
 					data[item]["CategoryName"] = data[item][key].CategoryName;
 					delete data[item]["Category"];
 				}
-			}	
+			}
 		}
 		$scope.products = data;
 		$scope.cart = $localStorage.cartItems;

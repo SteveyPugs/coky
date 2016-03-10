@@ -53,10 +53,10 @@ app.controller("Payment", function($scope, $localStorage, $sessionStorage, $http
 					},
 					token: token,
 					items: $localStorage.cartItems,
-					total: parseFloat($scope.total.toFixed(2)),
-					subtotal: parseFloat($scope.subtotal.toFixed(2)),
-					shipping: parseFloat($scope.shipping.toFixed(2)),
-					tax: parseFloat($scope.tax.toFixed(2))
+					total: Math.round($scope.total*100)/100,
+					subtotal: Math.round($scope.subtotal*100)/100,
+					shipping: Math.round($scope.shipping*100)/100,
+					tax: Math.round($scope.tax*100)/100
 				}).success(function(data){
 					$localStorage.cartCount = 0;
 					$localStorage.cartItems = {};
@@ -69,7 +69,7 @@ app.controller("Payment", function($scope, $localStorage, $sessionStorage, $http
 		$("#paymentButton").on("click", function(e){
 			handler.open({
 				name: "Tweedles Bakery",
-				amount: $scope.total.toFixed(2) * 100
+				amount: Math.round($scope.total*100)
 			});
 			e.preventDefault();
 		});

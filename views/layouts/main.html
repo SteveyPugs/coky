@@ -4,10 +4,10 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title></title>
-		<link href="/css/bootstrap.min.css" rel="stylesheet">
-		<link href="/css/font-awesome.min.css" rel="stylesheet">
-		<link href="/css/custom.css" rel="stylesheet">
+		<link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+		<link href="/bower_components/fontawesome/css/font-awesome.min.css" rel="stylesheet">
 		<link href="/bower_components/angular-xeditable/dist/css/xeditable.min.css" rel="stylesheet">
+		<link href="/custom.css" rel="stylesheet">
 		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 		<!--[if lt IE 9]>
@@ -18,8 +18,6 @@
 		<script src="/bower_components/angular-cookies/angular-cookies.min.js"></script>
 		<script src="/bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
 		<script src="/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-		<script src="/js/app.js"></script>
-		<script src="/js/config.js"></script>
 		<script src="/bower_components/ngstorage/ngStorage.min.js"></script>
 		<script src="/bower_components/lodash/lodash.min.js"></script>
 		<script src="/bower_components/angular-bootstrap-file-field/dist/angular-bootstrap-file-field.min.js"></script>
@@ -28,10 +26,12 @@
 		<script src="/bower_components/ng-file-upload-shim/ng-file-upload-shim.min.js"></script>
 		<script src="/bower_components/ng-file-upload/ng-file-upload.min.js"></script>
 		<script src="/bower_components/angular-xeditable/dist/js/xeditable.min.js"></script>
+		<script src="/js/dist/app.min.js"></script>
+		<script src="/js/config.js"></script>
 	</head>
 	<body ng-app="Bakery" ng-cloak>
 		{{{body}}}
-		<script src="/js/jquery.min.js"></script>
-		<script src="/js/bootstrap.min.js"></script>
+		<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+		<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 	</body>
 </html>

@@ -25,7 +25,9 @@
     "angular-bootstrap": "~1.1.0",
     "ng-file-upload-shim": "~11.2.2",
     "ng-file-upload": "~11.2.2",
-    "angular-xeditable": "~0.1.10"
+    "angular-xeditable": "~0.1.10",
+    "bootstrap": "~3.3.6",
+    "fontawesome": "~4.5.0"
   },
   "resolutions": {
     "angular": "~1.4.8"
