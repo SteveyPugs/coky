@@ -4,13 +4,13 @@
 	<h3>Address</h3>
 	<hr>
 	<form method="post" action="/store/cart/payment">
-		<div class="row" ng-if="account">
+		<div class="row" ng-if="account && addresses.length > 0">
 			<div class="col-lg-12">
 				<i>Choose an existing address</i>
 				<select class="form-control"  ng-model="addressSelected" required ng-options="address.UserAddressID as (address.UserAddressFullName + ' ' + address.UserAddressStreet + ', ' + address.UserAddressCity + ', ' + address.UserAddressState + ' ' + address.UserAddressZip) for address in addresses" ng-change="setAddress(addressSelected)"></select>
 			</div>
 		</div>
-		<br>
+		<br ng-if="account && addresses.length > 0">
 		<div class="row">
 			<div class="col-lg-6">
 				<label>Full Name</label>

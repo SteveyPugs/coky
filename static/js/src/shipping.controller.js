@@ -5,12 +5,12 @@ app.controller("Shipping", function($scope, $cookies, $localStorage, $http){
 	}
 	if($cookies.get("User")){
 		$scope.account = JSON.parse($cookies.get("User").substring($cookies.get("User").indexOf("{"), $cookies.get("User").lastIndexOf("}") + 1));
+		$http.get("/api/address/" + $scope.account.UserID).success(function(addresses){
+			$scope.addresses = addresses;
+		}).error(function(err){
+			console.log(err);
+		});
 	}
-	$http.get("/api/address/" + $scope.account.UserID).success(function(addresses){
-		$scope.addresses = addresses;
-	}).error(function(err){
-		console.log(err);
-	});
 	$scope.setAddress = function(id){
 		$scope.preset = false;
 		var address = _.find($scope.addresses, {
