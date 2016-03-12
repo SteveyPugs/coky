@@ -426,6 +426,20 @@ router.get("/api/user", function(req, res){
 	});
 });
 
+router.put("/api/user", function(req, res){
+	models.User.update({
+		UserPassword: bcrypt.hashSync(req.body.UserPassword, bcrypt.genSaltSync(10))
+	},{
+		where:{
+			UserID: req.body.UserID
+		}
+	}).then(function(results){
+		res.send("success");
+	}).catch(function(err){
+		res.send(err);
+	});
+});
+
 router.get("/api/order", function(req, res){
 	models.Order.findAll({
 		where: {
@@ -607,6 +621,20 @@ router.post("/api/admin", function(req, res){
  	}).catch(function(err){
  		res.send(err);
  	});
+});
+
+router.put("/api/admin", function(req, res){
+	models.Admin.update({
+		AdminPassword: bcrypt.hashSync(req.body.AdminPassword, bcrypt.genSaltSync(10))
+	},{
+		where:{
+			AdminID: req.body.AdminID
+		}
+	}).then(function(results){
+		res.send("success");
+	}).catch(function(err){
+		res.send(err);
+	});
 });
 
 router.delete("/api/admin/:AdminID", function(req, res){

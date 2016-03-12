@@ -1,4 +1,4 @@
-app.controller("Nav", function($scope, $localStorage, $sessionStorage, $location, $http, $cookies){
+app.controller("Nav", function($scope, $localStorage, $sessionStorage, $location, $http, $cookies, $uibModal){
 	$scope.$storage = $localStorage.$default({
     	cartCount: 0,
     	cartItems: {}
@@ -22,6 +22,32 @@ app.controller("Nav", function($scope, $localStorage, $sessionStorage, $location
 			}
 		}).error(function(err){
 			console.log(err);
+		});
+	};
+	$scope.forgetPassword = function(size){
+		var resetModal = $uibModal.open({
+			animation: true,
+			templateUrl: "/modals/reset-user.html",
+			controller: function($scope, $uibModalInstance, userid){
+				$scope.data = {};
+				$scope.cancel = function(){$uibModalInstance.dismiss("cancel")};
+				$scope.ok = function(){
+					$http.put("/api/user", {
+						UserID: userid,
+						UserPassword: $scope.data.UserPassword
+					}).success(function(data){
+						$uibModalInstance.close();
+					}).error(function(err){
+						console.log(err);
+					});
+				};
+			},
+			size: size,
+			resolve:{
+				userid: function(){
+					return $scope.account.UserID;
+				}
+			}
 		});
 	};
 });

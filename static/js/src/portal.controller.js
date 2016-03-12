@@ -323,4 +323,30 @@ app.controller("Portal", function($scope, $http, $filter, $uibModal, Upload, $co
 			}
 		});
 	};
+	$scope.forgetPassword = function(size){
+		var resetModal = $uibModal.open({
+			animation: true,
+			templateUrl: "/modals/reset-admin.html",
+			controller: function($scope, $uibModalInstance, adminid){
+				$scope.data = {};
+				$scope.cancel = function(){$uibModalInstance.dismiss("cancel")};
+				$scope.ok = function(){
+					$http.put("/api/admin", {
+						AdminID: adminid,
+						AdminPassword: $scope.data.AdminPassword
+					}).success(function(data){
+						$uibModalInstance.close();
+					}).error(function(err){
+						console.log(err);
+					});
+				};
+			},
+			size: size,
+			resolve:{
+				adminid: function(){
+					return $scope.account;
+				}
+			}
+		});
+	};
 });

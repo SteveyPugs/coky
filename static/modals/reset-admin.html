@@ -1,0 +1,16 @@
+<form name="myForm">
+    <div class="modal-header">
+        <h3 class="modal-title">Reset Password</h3>
+        <small>All Fields Required</small>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label>New Password</label>
+            <input type="password" class="form-control" required ng-model="data.AdminPassword">
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success btn-sm btn-block" type="button" ng-disabled="myForm.$invalid" ng-click="ok()">Reset</button>
+        <button class="btn btn-danger btn-sm btn-block" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+<form>
