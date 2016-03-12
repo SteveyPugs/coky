@@ -43,7 +43,7 @@ module.exports = function(grunt){
 				livereload: true
 			},
 			express: {
-				files: ["./static/js/src/*.js", "./views/*.html"],
+				files: ["./static/js/src/*.js", "./views/*.html", "./routes/*.js"],
 				tasks: ["ngAnnotate", "uglify", "express:run"],
 				options: {
 					spawn: false
