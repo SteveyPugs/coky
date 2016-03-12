@@ -21,6 +21,5 @@ app.controller("Profile", function($scope, $sessionStorage, $http, $cookies){
 		}).error(function(err){
 			console.log(err);
 		});
-	}
+	};
 });
-

@@ -412,6 +412,20 @@ router.get("/api/order/:UserID", function(req, res){
 	});
 });
 
+router.get("/api/user", function(req, res){
+	models.Admin.findAll({
+		where: {
+			deletedAt: null
+		},
+		attributes: ["AdminID", "AdminEmail", "createdAt"]
+	}).then(function(admins){
+		var admins = lodash.pluck(admins, "dataValues");
+		res.send(admins);
+	}).catch(function(err){
+		res.send(err);
+	});
+});
+
 router.get("/api/order", function(req, res){
 	models.Order.findAll({
 		where: {
@@ -580,6 +594,35 @@ router.delete("/api/category/:CategoryID", function(req, res){
 	});	
 });
 
+router.post("/api/admin", function(req, res){
+	var randompassword = chance.word({
+		length: 12
+	});
+	console.log(randompassword);
+	models.Admin.create({
+ 		AdminEmail: req.body.AdminEmail,
+ 		AdminPassword: bcrypt.hashSync(randompassword, bcrypt.genSaltSync(10))
+ 	}).then(function(results){
+ 		res.send("success");
+ 	}).catch(function(err){
+ 		res.send(err);
+ 	});
+});
+
+router.delete("/api/admin/:AdminID", function(req, res){
+	models.Admin.update({
+		deletedAt: moment().format("YYYY-MM-DD"),
+	},{
+		where:{
+			AdminID: req.params.AdminID
+		}
+	}).then(function(results){
+		res.send(results);
+	}).catch(function(err){
+		res.send(err);
+	});	
+});
+
 router.post("/api/address", function(req, res){
 	models.UserAddress.update({
 		UserAddressDefault: false
@@ -614,8 +657,10 @@ router.get("/admin/login", function(req, res){
 
 router.post("/admin/login", function(req, res){
 	models.Admin.find({
- 		AdminEmail: req.body.AdminEmail,
- 		deletedAt: null
+		where:{
+			AdminEmail: req.body.AdminEmail,
+ 			deletedAt: null	
+		}
  	}).then(function(admin){
  		if(bcrypt.compareSync(req.body.AdminPassword, admin.AdminPassword)){
  			res.cookie("Admin", admin);

@@ -1,4 +1,5 @@
-app.controller("Portal", function($scope, $http, $filter, $uibModal, Upload){
+app.controller("Portal", function($scope, $http, $filter, $uibModal, Upload, $cookies){
+	$scope.account = JSON.parse($cookies.get("Admin").substring($cookies.get("Admin").indexOf("{"), $cookies.get("Admin").lastIndexOf("}") + 1)).AdminID;
 	$scope.init = function(){
 		$http.get("/api/product").success(function(data){
 			for(var item in data){
@@ -41,6 +42,12 @@ app.controller("Portal", function($scope, $http, $filter, $uibModal, Upload){
 					}
 					$scope.orders = data;
 					$scope.safeorders = data;
+					$http.get("/api/user").success(function(data){
+						$scope.admins = data;
+						$scope.safeadmins = data;
+					}).error(function(err){
+						console.log(err);
+					});
 				}).error(function(err){
 					console.log(err);
 				});
@@ -256,6 +263,59 @@ app.controller("Portal", function($scope, $http, $filter, $uibModal, Upload){
 			resolve: {
 				orderid: function(){
 					return $scope.orderid;
+				},
+				init: function(){
+					return $scope.init;
+				}
+			}
+		});
+	};
+	$scope.openAdmin = function (size) {
+		var adminModal = $uibModal.open({
+			animation: true,
+			templateUrl: "/modals/admin.html",
+			controller: function($scope, $uibModalInstance, init){
+				$scope.data = {};
+				$scope.cancel = function(){$uibModalInstance.dismiss("cancel")};
+				$scope.ok = function(){
+					$http.post("/api/admin", {
+						AdminEmail: $scope.data.AdminEmail
+					}).success(function(data){
+						init();
+						$uibModalInstance.close();
+					}).error(function(err){
+						console.log(err);
+					});
+				};
+			},
+			size: size,
+			resolve: {
+				init: function(){
+					return $scope.init;
+				}
+			}
+		});
+	};
+	$scope.deleteAdmin = function (size, adminid) {
+		$scope.adminid = adminid;
+		var deleteConfirmtModal = $uibModal.open({
+			animation: true,
+			templateUrl: "/modals/confirm.html",
+			controller: function($scope, $uibModalInstance, adminid, init){
+				$scope.cancel = function(){$uibModalInstance.dismiss("cancel")};
+				$scope.ok = function(){
+					$http.delete("/api/admin/" + adminid).success(function(data){
+						init();
+						$uibModalInstance.close();
+					}).error(function(err){
+						console.log(err);
+					});
+				};
+			},
+			size: size,
+			resolve: {
+				adminid: function(){
+					return $scope.adminid;
 				},
 				init: function(){
 					return $scope.init;
