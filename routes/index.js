@@ -294,6 +294,41 @@ router.get("/logout", function(req, res){
 	res.clearCookie("User");
 	res.redirect(req.header("Referer"));
 });
+
+router.get("/forget", function(req, res){
+	res.render("forget");
+});
+
+router.post("/forget", function(req, res){
+	models.User.find({
+		where:{
+			UserEmail: req.body.Email
+		}
+	}).then(function(user){
+		if(user){
+			var randompassword = chance.word({
+				length: 12
+			});
+			console.log(randompassword);
+			models.User.update({
+				UserPassword: bcrypt.hashSync(randompassword, bcrypt.genSaltSync(10))
+			},{
+				where:{
+					UserID: user.UserID
+				}
+			}).then(function(results){
+				res.redirect("/forget##success");
+			}).catch(function(err){
+				res.send(err);
+			});
+		}
+		else{
+			res.redirect("/forget##success");
+		}
+	}).catch(function(err){
+		res.send(err);
+	});
+});
 /* Site Routes */
 
 /* API Routes */

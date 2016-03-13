@@ -17,7 +17,7 @@ module.exports = function(grunt){
 					"./static/js/dist/profile.controller.min.js": ["./static/js/src/profile.controller.js"],
 					"./static/js/dist/shipping.controller.min.js": ["./static/js/src/shipping.controller.js"],
 					"./static/js/dist/store.controller.min.js": ["./static/js/src/store.controller.js"],
-					"./static/js/dist/store.controller.min.js": ["./static/js/src/store.controller.js"],
+					"./static/js/dist/forget.controller.min.js": ["./static/js/src/forget.controller.js"],
 					"./static/js/dist/app.min.js": ["./static/js/src/app.js"]
 				}
 			}
@@ -34,6 +34,7 @@ module.exports = function(grunt){
 					"./static/js/dist/profile.controller.min.js": ["./static/js/dist/profile.controller.min.js"],
 					"./static/js/dist/shipping.controller.min.js": ["./static/js/dist/shipping.controller.min.js"],
 					"./static/js/dist/store.controller.min.js": ["./static/js/dist/store.controller.min.js"],
+					"./static/js/dist/forget.controller.min.js": ["./static/js/dist/forget.controller.min.js"],
 					"./static/js/dist/app.min.js": ["./static/js/dist/app.min.js"]
 				}
 			}

@@ -9,19 +9,30 @@ app.controller("Nav", function($scope, $localStorage, $sessionStorage, $location
 	if($cookies.get("User")){
 		$scope.account = JSON.parse($cookies.get("User").substring($cookies.get("User").indexOf("{"), $cookies.get("User").lastIndexOf("}") + 1));
 	}
-	$scope.login = function(){
-		$http.post("/login",{
-			UserEmail: $scope.UserEmail,
-			UserPassword: $scope.UserPassword,
-		}).success(function(data){
-			if(data){
-				window.location.reload();
-			}
-			else{
-				$("#BadLogin").removeClass("hide");
-			}
-		}).error(function(err){
-			console.log(err);
+	$scope.login = function(size){
+		var loginModal = $uibModal.open({
+			animation: true,
+			templateUrl: "/modals/login-modal.html",
+			controller: function($scope, $uibModalInstance){
+				$scope.data = {};
+				$scope.cancel = function(){$uibModalInstance.dismiss("cancel")};
+				$scope.ok = function(){
+					$http.post("/login",{
+						UserEmail: $scope.data.UserEmail,
+						UserPassword: $scope.data.UserPassword,
+					}).success(function(data){
+						if(data){
+							window.location.reload();
+						}
+						else{
+							$("#BadLogin").removeClass("hide");
+						}
+					}).error(function(err){
+						console.log(err);
+					});
+				};
+			},
+			size: size
 		});
 	};
 	$scope.forgetPassword = function(size){

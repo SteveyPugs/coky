@@ -17,7 +17,7 @@
 			<ul class="nav navbar-nav navbar-right">
 				<li><a href="/store">Store</a></li>
 				<li><a href="/store/cart"><i class="fa fa-shopping-cart"></i>&nbsp;Cart <span class="badge" ng-bind="$storage.cartCount"></span></a></li>
-				<li ng-if="!account"><a href="#" data-toggle="modal" data-target="#LoginModal">Log In</a></li>
+				<li ng-if="!account"><a href="#" ng-click="login('sm')">Log In</a></li>
 				<li class="dropdown" ng-if="account">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Account <span class="caret"></span></a>
 					<ul class="dropdown-menu">
@@ -31,7 +31,6 @@
 			</ul>
 		</div>
 	</div>
-	{{>login-modal}}
 	{{>complete-modal}}
 	{{>confirm-modal}}
 	{{>noconfirm-modal}}

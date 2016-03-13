@@ -1,0 +1,29 @@
+<div class="container" ng-controller="Forget">
+	<br>
+	<div class="row hide" id="success">
+		<div class="col-md-4"></div>
+		<div class="col-md-4 text-center">
+			<div class="alert alert-success" role="alert"><h4>Great!</h4>You will recieve an email shortly!</div>
+		</div>
+		<div class="col-md-4"></div>
+	</div>
+	<div class="row">
+		<div class="col-md-4"></div>
+		<div class="col-md-4 text-center">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4>Forgot Password?</h4>
+				</div>
+				<div class="panel-body">
+					<p>Provide Your Email Below</p>
+					<form method="post" action="/forget">
+						<div class="form-group"><input name="Email" type="email" class="form-control text-center" required></div>
+						<button type="submit" class="btn btn-default btn-md">Submit</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4"></div>
+	</div>
+</div>
+<script src="/js/dist/forget.controller.min.js"></script>
