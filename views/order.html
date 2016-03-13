@@ -23,21 +23,21 @@
 		</div>
 	</div>
 	<div class="row" ng-repeat="order in orders | limitTo : pageSize : begin">
-		<div class="col-lg-12">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<div class="row">
-						<div class="col-lg-2">
+						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
 							<b>Order Placed</b>
 							<br>
 							<span ng-bind="order.createdAt | date : 'MMMM d, y' : 'UTC'"></span>
 						</div>
-						<div class="col-lg-2">
+						<div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
 							<b>Total</b>
 							<br>
 							<span ng-bind="order.OrderTotal | currency : '$' : 2"></span>
 						</div>
-						<div class="col-lg-4">
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
 							<b>Shipping To</b>
 							<br>
 							<a style="color:white;" popover-placement="bottom" popover-trigger="mouseenter" uib-popover-template="popover.templateUrl">\{{order.OrderAddress.UserAddressFullName}}</a>
@@ -49,7 +49,7 @@
 								</div>
 							</script>
 						</div>
-						<div class="col-lg-4">
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
 							<b>Order ID</b>
 							<br>
 							<a ng-if="order.OrderPaid" style="color:white;" ng-href="/store/cart/confirmation/\{{order.OrderGUID}}" target="_blank" ng-bind="order.OrderGUID | uppercase"></a>
@@ -59,7 +59,7 @@
 				</div>
 				<div class="panel-body">
 					<div class="row">
-						<div class="col-lg-8">
+						<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
 							<h4>Items</h4>
 							<hr>
 							<div class="row" ng-repeat="piece in order.OrderPieces">
@@ -71,7 +71,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="col-lg-4">
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 							<h4>Costs <small ng-if="order.OrderPaid"><i class="fa fa-check-circle" ></i> Paid</small><small ng-if="!order.OrderPaid"><i class="fa fa-times-circle" ></i> Refunded</small></h4>
 							<hr>
 							Shipping: \{{order.OrderShipping | currency:'$'}}
