@@ -563,7 +563,7 @@ router.put("/api/order", function(req, res){
 					UserID: req.body.UserID
 				}
 			}).then(function(user){
-				var email_template_ordershipped = email_template.replace("##TITLE##", "Order Shipped!").replace("##DETAIL##", "Your order <b>" + order.OrderGUID + "</b> has shipped!");
+				var email_template_ordershipped = email_template.replace("##TITLE##", "Order Shipped!").replace("##DETAIL##", "Your order <b>" + req.body.OrderGUID + "</b> has shipped!");
 				transporter.sendMail({
 					from: mail_config.from,
 					to: user.UserEmail,
