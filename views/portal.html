@@ -100,7 +100,7 @@
 								<td class="text-center" ng-bind="order.createdAt | date:'MMMM dd, y h:mm:ss a'"></td>
 								<td class="text-center" ng-bind="order.OrderGUID"></td>
 								<td class="text-center">
-									<span ng-if="order.OrderPaid" onaftersave="saveShipping(order.OrderGUID, order.OrderShipCode)" editable-text="order.OrderShipCode">\{{order.OrderShipCode || "Add Shipping Code"}}</span>
+									<span ng-if="order.OrderPaid" onaftersave="saveShipping(order.OrderGUID, order.OrderShipCode, order.UserID)" editable-text="order.OrderShipCode">\{{order.OrderShipCode || "Add Shipping Code"}}</span>
 									<span ng-if="!order.OrderPaid">-</span>
 								</td>
 								<td class="text-center">

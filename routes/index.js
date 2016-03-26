@@ -557,24 +557,29 @@ router.put("/api/order", function(req, res){
 			OrderGUID: req.body.OrderGUID
 		}
 	}).then(function(order){
-		models.User.find({
-			where:{
-				UserID: order.UserID
-			}
-		}).then(function(user){
-			var email_template_ordershipped = email_template.replace("##TITLE##", "Order Shipped!").replace("##DETAIL##", "Your order <b>" + order.OrderGUID + "</b> has shipped!");
-			transporter.sendMail({
-				from: mail_config.from,
-				to: user.UserEmail,
-				subject: "Order Shipped!",
-				html: email_template_ordershipped
-			}, function(error, info){
-				if(error) return console.log(error);
-				res.send("updated");
+		if(req.body.UserID){
+			models.User.find({
+				where:{
+					UserID: req.body.UserID
+				}
+			}).then(function(user){
+				var email_template_ordershipped = email_template.replace("##TITLE##", "Order Shipped!").replace("##DETAIL##", "Your order <b>" + order.OrderGUID + "</b> has shipped!");
+				transporter.sendMail({
+					from: mail_config.from,
+					to: user.UserEmail,
+					subject: "Order Shipped!",
+					html: email_template_ordershipped
+				}, function(error, info){
+					if(error) return console.log(error);
+					res.send("updated");
+				});
+			}).catch(function(err){
+				res.send(err);
 			});
-		}).catch(function(err){
-			res.send(err);
-		});
+		}
+		else{
+			res.send("updated");
+		}
 	}).catch(function(err){
 		res.send(err);
 	});
