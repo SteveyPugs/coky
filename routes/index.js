@@ -25,6 +25,8 @@ var server_config = require("../config").server;
 router.use(cookieParser("baKeShoP"));
 var stripe = require("stripe")(stripe_config.sk);
 var moment  = require("moment");
+var fs = require("fs");
+var email_template  = fs.readFileSync("./email/index.html").toString("utf-8");
 
 /* Site Routes */
 router.get("/", function(req, res){
@@ -211,15 +213,14 @@ router.post("/register", function(req, res){
 		}
 	}).spread(function(user, created){
 		if(created){
+			var email_template_newuser = email_template.replace("##TITLE##", "Welcome to Tweedles!").replace("##DETAIL##", "Thank you so much for registering for Tweedles Bakery. Enjoy the goodies!<br><br>Only one step left to complete. Please click this <a href='http://" + server_config.host + ":" + server_config.port +  "/confirm/" + user.UserID + "/" + user.UserConfirmHash + "'>link</a> to verify you account with us.");
 			transporter.sendMail({
 				from: mail_config.from,
 				to: req.body.UserEmail,
 				subject: "Welcome to Tweedles Bakery!",
-				html: "<a href='http://" + server_config.host + ":" + server_config.port +  "/confirm/" + user.UserID + "/" + user.UserConfirmHash + "'>Confirm Link</a>"
+				html: email_template_newuser
 			}, function(error, info){
-				if(error){
-					return console.log(error);
-				}
+				if(error) return console.log(error);
 				res.redirect("/##complete");
 			});
 		}
