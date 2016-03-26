@@ -232,11 +232,12 @@ app.controller("Portal", function($scope, $http, $filter, $uibModal, Upload, $co
 			}
 		});
 	};
-	$scope.saveShipping = function(guid, code) {
+	$scope.saveShipping = function(guid, code, userid) {
 		if(code.length < 1) code = null;
 		$http.put("/api/order",{
 			OrderGUID: guid,
-			OrderShipCode: code
+			OrderShipCode: code,
+			UserID: userid
 		}).success(function(data){
 			console.log("order updated");
 		}).error(function(err){

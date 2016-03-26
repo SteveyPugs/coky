@@ -25,6 +25,8 @@ var server_config = require("../config").server;
 router.use(cookieParser("baKeShoP"));
 var stripe = require("stripe")(stripe_config.sk);
 var moment  = require("moment");
+var fs = require("fs");
+var email_template  = fs.readFileSync("./email/index.html").toString("utf-8");
 
 /* Site Routes */
 router.get("/", function(req, res){
@@ -75,8 +77,7 @@ router.post("/store/cart/charge", function(req, res){
 	var charge = stripe.charges.create({
 		amount: req.body.total * 100,
 		currency: "usd",
-		source: req.body.token.id,
-		receipt_email: "stephen.pugliese@outlook.com"
+		source: req.body.token.id
 	}, function(err, charge) {
 		if (err && err.type === 'StripeCardError'){
 		}
@@ -128,7 +129,18 @@ router.post("/store/cart/charge", function(req, res){
 						models.OrderPiece.bulkCreate(pieces).then(function(){
 						}).then(function(error){
 							if(error) res.send(err);
-							else res.send(order.OrderGUID);
+							else{
+								var email_template_orderplaced = email_template.replace("##TITLE##", "Order Placed!").replace("##DETAIL##", "Thanks so much for placing your order.<br><br>Your order number is: " + order.OrderGUID);
+								transporter.sendMail({
+									from: mail_config.from,
+									to: req.cookies.User.UserEmail,
+									subject: "Order Placed!",
+									html: email_template_orderplaced
+								}, function(error, info){
+									if(error) return console.log(error);
+									res.send(order.OrderGUID);
+								});
+							}
 						});
 					}).catch(function(err){
 						console.log(err);
@@ -211,15 +223,14 @@ router.post("/register", function(req, res){
 		}
 	}).spread(function(user, created){
 		if(created){
+			var email_template_newuser = email_template.replace("##TITLE##", "Welcome to Tweedles!").replace("##DETAIL##", "Thank you so much for registering for Tweedles Bakery. Enjoy the goodies!<br><br>Only one step left to complete. Please click this <a href='http://" + server_config.host + ":" + server_config.port +  "/confirm/" + user.UserID + "/" + user.UserConfirmHash + "'>link</a> to verify you account with us.");
 			transporter.sendMail({
 				from: mail_config.from,
 				to: req.body.UserEmail,
 				subject: "Welcome to Tweedles Bakery!",
-				html: "<a href='http://" + server_config.host + ":" + server_config.port +  "/confirm/" + user.UserID + "/" + user.UserConfirmHash + "'>Confirm Link</a>"
+				html: email_template_newuser
 			}, function(error, info){
-				if(error){
-					return console.log(error);
-				}
+				if(error) return console.log(error);
 				res.redirect("/##complete");
 			});
 		}
@@ -236,8 +247,8 @@ router.get("/confirm/:UserID/:Hash(*)", function(req, res){
 			UserConfirmHash: req.params.Hash,
 			deletedAt: null
 		}
-	}).then(function(results){
-		if(results){
+	}).then(function(user){
+		if(user){
 			models.User.update({
 				UserConfirmed: true
 			},{
@@ -247,7 +258,16 @@ router.get("/confirm/:UserID/:Hash(*)", function(req, res){
 					deletedAt: null
 				}
 			}).then(function(updated){
-				res.redirect("/##confirm");
+				var email_template_confirmed = email_template.replace("##TITLE##", "You're confirmed!").replace("##DETAIL##", "Thank you so much for confirming your account.");
+				transporter.sendMail({
+					from: mail_config.from,
+					to: user.UserEmail,
+					subject: "You're confirmed!",
+					html: email_template_confirmed
+				}, function(error, info){
+					if(error) return console.log(error);
+					res.redirect("/##confirm");
+				});
 			}).catch(function(err){
 				res.send(err);
 			});
@@ -309,7 +329,6 @@ router.post("/forget", function(req, res){
 			var randompassword = chance.word({
 				length: 12
 			});
-			console.log(randompassword);
 			models.User.update({
 				UserPassword: bcrypt.hashSync(randompassword, bcrypt.genSaltSync(10))
 			},{
@@ -317,7 +336,16 @@ router.post("/forget", function(req, res){
 					UserID: user.UserID
 				}
 			}).then(function(results){
-				res.redirect("/forget##success");
+				var email_template_passwordreset = email_template.replace("##TITLE##", "Password Reset").replace("##DETAIL##", "Your password has been reset. Use this temporary password to login in: <b>" + randompassword + "</b>");
+				transporter.sendMail({
+					from: mail_config.from,
+					to: user.UserEmail,
+					subject: "Password Reset!",
+					html: email_template_passwordreset
+				}, function(error, info){
+					if(error) return console.log(error);
+					res.redirect("/forget##success");
+				});
 			}).catch(function(err){
 				res.send(err);
 			});
@@ -528,8 +556,30 @@ router.put("/api/order", function(req, res){
 		where:{
 			OrderGUID: req.body.OrderGUID
 		}
-	}).then(function(updatedorder){
-		res.send("updated");
+	}).then(function(order){
+		if(req.body.UserID){
+			models.User.find({
+				where:{
+					UserID: req.body.UserID
+				}
+			}).then(function(user){
+				var email_template_ordershipped = email_template.replace("##TITLE##", "Order Shipped!").replace("##DETAIL##", "Your order <b>" + req.body.OrderGUID + "</b> has shipped!");
+				transporter.sendMail({
+					from: mail_config.from,
+					to: user.UserEmail,
+					subject: "Order Shipped!",
+					html: email_template_ordershipped
+				}, function(error, info){
+					if(error) return console.log(error);
+					res.send("updated");
+				});
+			}).catch(function(err){
+				res.send(err);
+			});
+		}
+		else{
+			res.send("updated");
+		}
 	}).catch(function(err){
 		res.send(err);
 	});
@@ -779,7 +829,24 @@ router.get("/admin/order/:OrderID/refund", function(req, res){
 					OrderID: req.params.OrderID
 				}
 			}).then(function(refundorder){
-				res.send("Refunded");
+				models.User.find({
+					where:{
+						UserID: order.UserID
+					}
+				}).then(function(user){
+					var email_template_orderrefunded = email_template.replace("##TITLE##", "Order Refunded!").replace("##DETAIL##", "Your order <b>" + order.OrderGUID + "</b> has refunded.");
+					transporter.sendMail({
+						from: mail_config.from,
+						to: user.UserEmail,
+						subject: "Order Refunded!",
+						html: email_template_orderrefunded
+					}, function(error, info){
+						if(error) return console.log(error);
+						res.send("Refunded");
+					});
+				}).catch(function(err){
+					res.send(err);
+				});
 			}).catch(function(err){
 				res.send(err);
 			});
