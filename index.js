@@ -26,5 +26,5 @@ var server = https.createServer({
 	cert: config.ssl.cert,
 	ca: config.ssl.ca
 }, app).listen(config.server.port, config.server.host, function(){
-	console.log("Example app listening at http://%s:%s", server.address().address, server.address().port);
+	console.log("Example app listening at https://%s:%s", server.address().address, server.address().port);
 });
