@@ -19,6 +19,11 @@ var config = {
 	},
 	stripe:{
 		sk: "KEY"
+	},
+	ssl:{
+		key: fs.readFileSync('file.key'),
+		cert: fs.readFileSync('file.crt'),
+		ca: fs.readFileSync('file.crt')
 	}
 };
 
